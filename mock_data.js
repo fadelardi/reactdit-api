@@ -5,7 +5,7 @@ var data = {
         author: "Author1",
         title: "Text Post #1",
         timestring: "xx hours ago",
-        subforum: "subforum1",
+        forum: "forum1",
         comments: [
             {id: 1, body: 'lol', author: 'Author1', date: '2016-01-01'},
             {id: 2, body: 'lel', author: 'Author2', date: '2016-01-02'},
@@ -17,7 +17,7 @@ var data = {
         author: "Author2",
         title: "Text Post #2",
         timestring: "xx hours ago",
-        subforum: "subforum2",
+        forum: "forum2",
         comments: [
             {id: 1, body: 'lel', author: 'Author1', date: '2016-01-01'},
         ]
@@ -27,7 +27,7 @@ var data = {
         author: "Author3",
         title: "Image Post #1",
         timestring: "xx hours ago",
-        subforum: "subforum1",
+        forum: "forum1",
         comments: [
             {id: 2, body: 'lel', author: 'Author1', date: '2016-01-01'},
         ]
@@ -37,7 +37,7 @@ var data = {
         author: "Author4",
         title: "Link Post #1",
         timestring: "xx hours ago",
-        subforum: "subforum2",
+        forum: "forum2",
         comments: [
             {id: 1, body: 'lel', author: 'Author1', date: '2016-01-01'},
         ]
@@ -47,7 +47,7 @@ var data = {
         author: "Author5",
         title: "Link Post #2",
         timestring: "xx hours ago",
-        subforum: "subforum2",
+        forum: "forum2",
         comments: [
             {id: 1, body: 'lel', author: 'Author1', date: '2016-01-01'},
         ]
@@ -57,7 +57,7 @@ var data = {
         author: "Author6",
         title: "Title6",
         timestring: "xx hours ago",
-        subforum: "subforum",
+        forum: "forum",
         comments: [
             {id: 1, body: 'lel', author: 'Author1', date: '2016-01-01'},
         ]
