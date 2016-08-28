@@ -13,6 +13,7 @@ function getCommments(threads, title) {
 
 app
   .get('/', function(req, res) {
+    res.set({'Access-Control-Allow-Origin': '*'});
     res.send(JSON.stringify(data.threads));
   })
   .get('/f/:title', function(req, res) {
