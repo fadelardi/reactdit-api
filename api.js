@@ -5,12 +5,13 @@ var data = require('./mock_data.js');
 var threads = data.threads;
 var users = data.users;
 
-function getCommments(title) {
+function getThread(id) {
   for (var i = 0; i < threads.length; i++) {
-    if (title == threads[i].title) {
-      return JSON.stringify(threads[i].comments);
+    if (id == threads[i].id) {
+      return JSON.stringify([threads[i]]);
     }
   }
+  return JSON.stringify([]);
 }
 
 function getUser(username) {
@@ -48,9 +49,9 @@ app
     res.set({'Access-Control-Allow-Origin': '*'});
     res.send(getUser(req.params.username));
   })
-  .get('/t/:title', function(req, res) {
+  .get('/t/:id', function(req, res) {
     res.set({'Access-Control-Allow-Origin': '*'});
-    res.send(getCommments(req.params.title));
+    res.send(getThread(req.params.id));
   })
 
 app.listen(3000, function() {
