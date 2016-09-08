@@ -8,16 +8,16 @@ app.use(function(req, res, next) {
 
 app
   .get('/', function(req, res) {
-    res.send(actions.getThreads());
+    actions.getForum(res);
   })
   .get('/f/:forum', function(req, res) {
-    res.send(actions.getThreads(req.params.forum));
+    actions.getForum(res, req.params.forum);
   })
   .get('/u/:username', function(req, res) {
-    res.send(actions.getUser(req.params.username));
+    actions.getUser(res, req.params.username);
   })
   .get('/t/:id', function(req, res) {
-    res.send(actions.getThread(req.params.id));
+    actions.getThread(res, req.params.id);
   });
 
 module.exports = app;

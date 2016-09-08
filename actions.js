@@ -1,34 +1,42 @@
-var data = require('./mock_data.js');
-var threads = data.threads;
-var users = data.users;
+var pg = require('pg');
+var config = require('./config.js');
+var pool = new pg.Pool(config.db);
 
-module.exports.getThread = function(id) {
-  for (var i = 0; i < threads.length; i++) {
-    if (id == threads[i].id) {
-      return JSON.stringify([threads[i]]);
+var actions = {
+  getThread : function(response, id) {
+    var query = 'SELECT * FROM threads WHERE id = $1';
+    this.get(response, query, [id]);
+  },
+
+  getUser : function(response, username) {
+    var query = 'SELECT * FROM users where username = "$1"';
+    this.get(response, query, [username]);
+  },
+
+
+  getForum : function(response, forum) {
+    var params = [];
+    var query = 'SELECT * FROM threads';
+    if (typeof forum != 'undefined') {
+      query += ' WHERE pk_forum_id = $1';
+      params.push(forum);
     }
-  }
-  return JSON.stringify([]);
-}
+    this.get(response, query, params);
+  },
 
-module.exports.getUser = function(username) {
-  for (var i = 0; i < users.length; i++) {
-    if (username == users[i].username) {
-      return JSON.stringify(users[i]);
-    }
-  }
-}
-
-module.exports.getThreads = function(forum) {
-  if (typeof forum != 'undefined') {
-    var foundThreads = [];
-    for (var i = 0; i < threads.length; i++) {
-      if (forum == threads[i].forum) {
-        foundThreads.push(threads[i]);
+  get : function(response, query, params) {
+    pool.connect(function(err, client, done) {
+      done();
+      if (err) {
+         response.send(JSON.stringify(err));
       }
-    }
-    return JSON.stringify(foundThreads);
-  }
 
-  return JSON.stringify(threads);
+      var q = client.query(query, params)
+      .then(function(rs) {
+        response.send(JSON.stringify(rs.rows));
+      });
+    });
+  }
 }
+
+module.exports = actions;
