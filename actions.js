@@ -4,7 +4,10 @@ var pool = new pg.Pool(config.db);
 
 var actions = {
   getThread : function(response, id) {
-    var query = 'SELECT * FROM threads WHERE id = $1';
+    var query = 'SELECT c.*, u.username AS author, t.title FROM threads t '
+              + 'JOIN comments c ON t.id = c.pk_threads_id '
+              + 'JOIN users u ON u.id = c.pk_users_id '
+              + 'WHERE t.id = $1';
     this.get(response, query, [id]);
   },
 
