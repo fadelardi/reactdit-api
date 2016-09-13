@@ -27,6 +27,23 @@ var actions = {
     this.get(response, query, params);
   },
 
+  addComment: function(response, data) {
+    pool.connect(function(err, client, done) {
+      done();
+      if (err) {
+         response.send(JSON.stringify(err));
+      }
+
+      client.query('INSERT INTO comments (id, body, created, pk_threads_id, pk_users_id) VALUES (DEFAULT, $1, $2, $3, $4)', [data.comment, new Date(), data.id, data.uid])
+      .then(function(rs) {
+        response.send(JSON.stringify('ok'));
+      })
+      .catch(function(err) {
+        response.send(JSON.stringify('ko'));
+      });
+    });
+  },
+
   get : function(response, query, params) {
     pool.connect(function(err, client, done) {
       done();
