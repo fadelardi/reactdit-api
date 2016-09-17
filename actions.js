@@ -44,6 +44,25 @@ var actions = {
     });
   },
 
+  addThread: function(response, data) {
+    pool.connect(function(err, client, done) {
+      done();
+      if (err) {
+         response.send(JSON.stringify(err));
+      }
+
+      client.query('INSERT INTO threads (id, pk_users_id, title, created, pk_forum_id, content, content_url) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id',
+      [data.uid, data.title, new Date(), data.fid, data.content, data.url])
+      .then(function(rs) {
+        response.send(JSON.stringify(rs));
+      })
+      .catch(function(err) {
+        console.log(err);
+        response.status(500).send(JSON.stringify(err));
+      });
+    });
+  },
+
   get : function(response, query, params) {
     pool.connect(function(err, client, done) {
       done();

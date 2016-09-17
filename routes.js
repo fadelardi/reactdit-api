@@ -16,8 +16,15 @@ app
   .get('/', function(req, res) {
     actions.getForum(res);
   })
+  .post('/', function(req, res) {
+    actions.addThread(res, req.body);
+  })
   .get('/f/:forum', function(req, res) {
     actions.getForum(res, req.params.forum);
+  })
+  .post('/f/:forum', function(req, res) {
+    req.body.fid = req.params.forum;
+    actions.addThread(res, req.body);
   })
   .get('/u/:username', function(req, res) {
     actions.getUser(res, req.params.username);
