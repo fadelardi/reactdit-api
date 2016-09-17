@@ -36,10 +36,10 @@ var actions = {
 
       client.query('INSERT INTO comments (id, body, created, pk_threads_id, pk_users_id) VALUES (DEFAULT, $1, $2, $3, $4)', [data.comment, new Date(), data.id, data.uid])
       .then(function(rs) {
-        response.send(JSON.stringify('ok'));
+        response.send(JSON.stringify(rs));
       })
       .catch(function(err) {
-        response.send(JSON.stringify('ko'));
+        response.status(500).send(JSON.stringify(err));
       });
     });
   },
@@ -67,7 +67,7 @@ var actions = {
     pool.connect(function(err, client, done) {
       done();
       if (err) {
-         response.send(JSON.stringify(err));
+         response.status(500).send(JSON.stringify(err));
       }
 
       var q = client.query(query, params)
