@@ -70,12 +70,12 @@ var actions = {
          response.status(500).send(JSON.stringify(err));
       }
 
-      var q = client.query(query, params)
+      client.query(query, params)
       .then(function(rs) {
         response.send(JSON.stringify(rs.rows));
       });
     });
   }
-}
+};
 
 module.exports = actions;
