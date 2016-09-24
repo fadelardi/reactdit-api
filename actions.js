@@ -23,8 +23,9 @@ var actions = {
 
       client.query(query, [id])
       .then(function(rs) {
+        self.replyIndex = 0;
         var replies;
-        replies = self.generateRecursiveReplies(rs.rows, 0, 0);
+        replies = self.generateRecursiveReplies(rs.rows, 0);
         response.json(replies);
       })
       .catch(function(err) {
