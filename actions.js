@@ -3,12 +3,51 @@ var config = require('./config.js');
 var pool = new pg.Pool(config.db);
 
 var actions = {
+  replyIndex: 0,
+
   getThread : function(response, id) {
-    var query = 'SELECT c.*, u.username AS author, t.title FROM threads t '
-              + 'JOIN comments c ON t.id = c.pk_threads_id '
+    var self = this;
+    var query = 'WITH RECURSIVE comments_tree AS ('
+              + 'SELECT *, array[id] AS path, 0 as level FROM comments c WHERE c.pk_threads_id = $1 AND parent_id = 0 '
+              + 'UNION ALL '
+              + 'SELECT c.*, path || array[comments_tree.id] AS path, comments_tree.level+1 AS level FROM comments c JOIN comments_tree ON c.parent_id = comments_tree.id '
+              + ') '
+              + 'SELECT c.*, u.username AS author FROM comments_tree c '
               + 'JOIN users u ON u.id = c.pk_users_id '
-              + 'WHERE t.id = $1';
-    this.get(response, query, [id]);
+              + 'ORDER BY path, created ASC ';
+    pool.connect(function(err, client, done) {
+      done();
+      if (err) {
+         response.status(500).json(err);
+      }
+
+      client.query(query, [id])
+      .then(function(rs) {
+        var replies;
+        replies = self.generateRecursiveReplies(rs.rows, 0, 0);
+        response.json(replies);
+      })
+      .catch(function(err) {
+        console.log(err);
+      });
+    });
+  },
+
+  generateRecursiveReplies : function(comments, parent) {
+    var result = [];
+
+    for (var i = this.replyIndex; i < comments.length; i++) {
+      if (comments[i].parent_id == parent) {
+        result.push(comments[i]);
+        this.replyIndex++;
+      } else if (comments[i].parent_id > parent) {
+        comments[i-1].replies = this.generateRecursiveReplies(comments, comments[i].parent_id);
+        i = this.replyIndex - 1;
+      } else {
+        break;
+      }
+    }
+    return result;
   },
 
   getUser : function(response, username) {
@@ -34,7 +73,7 @@ var actions = {
          response.send(JSON.stringify(err));
       }
 
-      client.query('INSERT INTO comments (id, body, created, pk_threads_id, pk_users_id) VALUES (DEFAULT, $1, $2, $3, $4)', [data.comment, new Date(), data.id, data.uid])
+      client.query('INSERT INTO comments (id, body, created, pk_threads_id, pk_users_id, parent_id) VALUES (DEFAULT, $1, $2, $3, $4, $5)', [data.comment, new Date(), data.id, data.uid, data.parent_id])
       .then(function(rs) {
         response.send(JSON.stringify(rs));
       })
