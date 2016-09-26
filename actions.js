@@ -60,7 +60,9 @@ var actions = {
 
   getForum : function(response, forum) {
     var params = [];
-    var query = 'SELECT * FROM threads';
+    var query = 'SELECT t.*, u.username, f.name as forum FROM threads t '
+              + 'JOIN users u ON u.id = t.pk_users_id '
+              + 'JOIN forums f ON f.id = t.pk_forum_id ';
     if (typeof forum != 'undefined') {
       query += ' WHERE pk_forum_id = $1';
       params.push(forum);
