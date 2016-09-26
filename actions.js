@@ -39,6 +39,7 @@ var actions = {
 
     for (var i = this.replyIndex; i < comments.length; i++) {
       if (comments[i].parent_id == parent) {
+        comments[i].replies = [];
         result.push(comments[i]);
         this.replyIndex++;
       } else if (comments[i].parent_id > parent) {
