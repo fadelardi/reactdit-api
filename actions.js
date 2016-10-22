@@ -10,11 +10,11 @@ var actions = {
     var query = 'WITH RECURSIVE comments_tree AS ('
               + 'SELECT *, array[id] AS path, 0 as level FROM comments c WHERE c.pk_threads_id = $1 AND parent_id = 0 '
               + 'UNION ALL '
-              + 'SELECT c.*, path || array[comments_tree.id] AS path, comments_tree.level+1 AS level FROM comments c JOIN comments_tree ON c.parent_id = comments_tree.id '
+              + 'SELECT c.*, path || array[c.id] AS path, comments_tree.level+1 AS level FROM comments c JOIN comments_tree ON c.parent_id = comments_tree.id '
               + ') '
               + 'SELECT c.*, u.username AS author FROM comments_tree c '
               + 'JOIN users u ON u.id = c.pk_users_id '
-              + 'ORDER BY path, created ASC ';
+              + 'ORDER BY path, created';
     pool.connect(function(err, client, done) {
       done();
       if (err) {
