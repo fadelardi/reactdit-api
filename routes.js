@@ -22,6 +22,9 @@ app
   .get('/f/:forum', function(req, res) {
     actions.getForum(res, req.params.forum);
   })
+  .get('/fora', function(req, res) {
+    actions.getFora(res);
+  })
   .post('/f/:forum', function(req, res) {
     req.body.fid = req.params.forum;
     actions.addThread(res, req.body);

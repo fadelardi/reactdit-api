@@ -57,6 +57,11 @@ var actions = {
     this.get(response, query, [username]);
   },
 
+  getFora : function(response) {
+      var params = [];
+      var query = 'SELECT * FROM forums';
+      this.get(response, query, params);
+  },
 
   getForum : function(response, forum) {
     var params = [];
@@ -76,6 +81,7 @@ var actions = {
       if (err) {
          response.send(JSON.stringify(err));
       }
+      response.status(500).send('whatever');
 
       client.query('INSERT INTO comments (id, body, created, pk_threads_id, pk_users_id, parent_id) VALUES (DEFAULT, $1, $2, $3, $4, $5)', [data.comment, new Date(), data.id, data.uid, data.parent_id])
       .then(function(rs) {
