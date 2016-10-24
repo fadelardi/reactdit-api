@@ -35,6 +35,9 @@ app
   .get('/t/:id', function(req, res) {
     actions.getThread(res, req.params.id);
   })
+  .get('/t/:id/comments', function(req, res) {
+    actions.getComments(res, req.params.id);
+  })
   .post('/t/:id', function(req, res) {
     actions.addComment(res, req.body);
   });

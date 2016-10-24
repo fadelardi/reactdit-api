@@ -6,6 +6,12 @@ var actions = {
   replyIndex: 0,
 
   getThread : function(response, id) {
+    var query = 'SELECT title, t.created, content, content_url, u.username, u.id as user_id FROM threads t '
+                + 'JOIN users u ON t.pk_users_id = u.id AND t.id = $1 LIMIT 1';
+    this.getOne(response, query, [id]);
+  },
+
+  getComments : function(response, id) {
     var self = this;
     var query = 'WITH RECURSIVE comments_tree AS ('
               + 'SELECT *, array[id] AS path, 0 as level FROM comments c WHERE c.pk_threads_id = $1 AND parent_id = 0 '
@@ -122,6 +128,21 @@ var actions = {
       client.query(query, params)
       .then(function(rs) {
         response.send(JSON.stringify(rs.rows));
+      });
+    });
+  },
+
+  getOne : function(response, query, params) {
+    pool.connect(function(err, client, done) {
+      done();
+      if (err) {
+         response.status(500).send(JSON.stringify(err));
+      }
+
+      client.query(query, params)
+      .then(function(rs) {
+        var ret = typeof rs.rows[0] != 'undefined' ? rs.rows[0] : {};
+        response.json(ret);
       });
     });
   }
