@@ -85,16 +85,15 @@ var actions = {
     pool.connect(function(err, client, done) {
       done();
       if (err) {
-         response.send(JSON.stringify(err));
+         response.status(500).json(err);
       }
-      response.status(500).send('whatever');
 
       client.query('INSERT INTO comments (id, body, created, pk_threads_id, pk_users_id, parent_id) VALUES (DEFAULT, $1, $2, $3, $4, $5)', [data.comment, new Date(), data.id, data.uid, data.parent_id])
       .then(function(rs) {
-        response.send(JSON.stringify(rs));
+        response.json(rs);
       })
       .catch(function(err) {
-        response.status(500).send(JSON.stringify(err));
+        response.status(500).json(err);
       });
     });
   },
@@ -103,17 +102,17 @@ var actions = {
     pool.connect(function(err, client, done) {
       done();
       if (err) {
-         response.send(JSON.stringify(err));
+         response.status(500).json(err);
       }
 
       client.query('INSERT INTO threads (id, pk_users_id, title, created, pk_forum_id, content, content_url) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id',
       [data.uid, data.title, new Date(), data.fid, data.content, data.url])
       .then(function(rs) {
-        response.send(JSON.stringify(rs));
+        response.json(rs);
       })
       .catch(function(err) {
         console.log(err);
-        response.status(500).send(JSON.stringify(err));
+        response.status(500).json(err);
       });
     });
   },
@@ -122,12 +121,12 @@ var actions = {
     pool.connect(function(err, client, done) {
       done();
       if (err) {
-         response.status(500).send(JSON.stringify(err));
+         response.status(500).json(err);
       }
 
       client.query(query, params)
       .then(function(rs) {
-        response.send(JSON.stringify(rs.rows));
+        response.json(rs.rows);
       });
     });
   },
@@ -136,7 +135,7 @@ var actions = {
     pool.connect(function(err, client, done) {
       done();
       if (err) {
-         response.status(500).send(JSON.stringify(err));
+         response.status(500).json(err);
       }
 
       client.query(query, params)
