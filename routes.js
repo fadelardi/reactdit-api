@@ -14,16 +14,16 @@ app.use(bodyParser.json());
 
 app
   .get('/', function(req, res) {
-    actions.getForum(res);
+    actions.getThreads(res);
   })
   .post('/', function(req, res) {
     actions.addThread(res, req.body);
   })
   .get('/f/:forum', function(req, res) {
-    actions.getForum(res, req.params.forum);
+    actions.getThreads(res, req.params.forum);
   })
-  .get('/fora', function(req, res) {
-    actions.getFora(res);
+  .get('/forums', function(req, res) {
+    actions.getForums(res);
   })
   .post('/f/:forum', function(req, res) {
     req.body.fid = req.params.forum;

@@ -63,13 +63,14 @@ var actions = {
     this.get(response, query, [username]);
   },
 
-  getFora : function(response) {
+  getForums : function(response) {
       var params = [];
       var query = 'SELECT * FROM forums';
       this.get(response, query, params);
   },
 
-  getForum : function(response, forum) {
+  getThreads : function(response, forum) {
+    var self = this;
     var params = [];
     var query = 'SELECT t.*, u.username, f.name as forum FROM threads t '
               + 'JOIN users u ON u.id = t.pk_users_id '
@@ -78,7 +79,41 @@ var actions = {
       query += ' WHERE pk_forum_id = $1';
       params.push(forum);
     }
-    this.get(response, query, params);
+    pool.connect(function(err, client, done) {
+      done();
+      if (err) {
+         response.status(500).json(err);
+      }
+
+      client.query(query, params)
+      .then(function(threadRs) {
+        var countQuery = 'SELECT pk_threads_id AS tid, count(*) AS total FROM comments GROUP BY pk_threads_id';
+        client.query(countQuery)
+        .then(function(countRs) {
+          var threads = threadRs.rows;
+          var counts = self.sortCountArr(countRs.rows);
+
+          threads.forEach(function(thread, index) {
+              console.log(counts[index]);
+              threads[index].totalCount = (typeof counts[index] != 'undefined') ? counts[index] : '0';
+          });
+
+          response.json(threads);
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+      });
+    });
+  },
+
+  sortCountArr : function(countArr) {
+    var obj = {};
+    countArr.forEach(function(elem) {
+      obj[elem.tid] = elem.total;
+    });
+
+    return obj;
   },
 
   addComment: function(response, data) {
