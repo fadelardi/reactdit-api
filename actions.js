@@ -94,7 +94,6 @@ var actions = {
           var counts = self.sortCountArr(countRs.rows);
 
           threads.forEach(function(thread, index) {
-              console.log(counts[index]);
               threads[index].totalCount = (typeof counts[index] != 'undefined') ? counts[index] : '0';
           });
 
