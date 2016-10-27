@@ -92,9 +92,8 @@ var actions = {
         .then(function(countRs) {
           var threads = threadRs.rows;
           var counts = self.sortCountArr(countRs.rows);
-
           threads.forEach(function(thread, index) {
-              threads[index].totalCount = (typeof counts[index] != 'undefined') ? counts[index] : '0';
+              threads[index].totalCount = (typeof counts[thread.id] != 'undefined') ? counts[thread.id] : '0';
           });
 
           response.json(threads);
