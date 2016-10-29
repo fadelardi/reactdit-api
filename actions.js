@@ -76,7 +76,7 @@ var actions = {
               + 'JOIN users u ON u.id = t.pk_users_id '
               + 'JOIN forums f ON f.id = t.pk_forum_id ';
     if (typeof forum != 'undefined') {
-      query += ' WHERE pk_forum_id = $1';
+      query += ' WHERE f.name = $1';
       params.push(forum);
     }
     pool.connect(function(err, client, done) {
