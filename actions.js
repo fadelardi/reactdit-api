@@ -6,7 +6,7 @@ var actions = {
   replyIndex: 0,
 
   getThread : function(response, id) {
-    var query = 'SELECT title, t.created, content, content_url, u.username, u.id as user_id FROM threads t '
+    var query = 'SELECT t.title, t.created, t.content, u.username, u.id as user_id, t.type FROM threads t '
                 + 'JOIN users u ON t.pk_users_id = u.id AND t.id = $1 LIMIT 1';
     this.getOne(response, query, [id]);
   },
@@ -138,8 +138,8 @@ var actions = {
          response.status(500).json(err);
       }
 
-      client.query('INSERT INTO threads (id, pk_users_id, title, created, pk_forum_id, content, content_url) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id',
-      [data.uid, data.title, new Date(), data.fid, data.content, data.url])
+      client.query('INSERT INTO threads (id, pk_users_id, title, created, pk_forum_id, content, type) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id',
+      [data.uid, data.title, new Date(), data.fid, data.content, data.type])
       .then(function(rs) {
         response.json(rs);
       })
