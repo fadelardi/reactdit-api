@@ -25,6 +25,8 @@ var actions = {
       done();
       if (err) {
          response.status(500).json(err);
+         console.error(err);
+         return;
       }
 
       client.query(query, [id])
@@ -35,7 +37,7 @@ var actions = {
         response.json(replies);
       })
       .catch(function(err) {
-        console.log(err);
+        console.error(err);
       });
     });
   },
@@ -81,8 +83,10 @@ var actions = {
     }
     pool.connect(function(err, client, done) {
       done();
+
       if (err) {
          response.status(500).json(err);
+         return console.error(err);
       }
 
       client.query(query, params)
@@ -99,7 +103,8 @@ var actions = {
           response.json(threads);
         })
         .catch(function(err) {
-          console.log(err);
+          response.status(500).json(err);
+          console.error(err);
         });
       });
     });
@@ -119,6 +124,8 @@ var actions = {
       done();
       if (err) {
          response.status(500).json(err);
+         console.error(err);
+         return;
       }
 
       client.query('INSERT INTO comments (id, body, created, pk_threads_id, pk_users_id, parent_id) VALUES (DEFAULT, $1, $2, $3, $4, $5)', [data.comment, new Date(), data.id, data.uid, data.parent_id])
@@ -136,6 +143,8 @@ var actions = {
       done();
       if (err) {
          response.status(500).json(err);
+         console.error(err);
+         return;
       }
 
       client.query('INSERT INTO threads (id, pk_users_id, title, created, pk_forum_id, content, type) VALUES (DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id',
@@ -144,7 +153,6 @@ var actions = {
         response.json(rs);
       })
       .catch(function(err) {
-        console.log(err);
         response.status(500).json(err);
       });
     });
@@ -155,6 +163,8 @@ var actions = {
       done();
       if (err) {
          response.status(500).json(err);
+         console.error(err);
+         return;
       }
 
       client.query(query, params)
@@ -169,6 +179,8 @@ var actions = {
       done();
       if (err) {
          response.status(500).json(err);
+         console.error(err);
+         return;
       }
 
       client.query(query, params)
