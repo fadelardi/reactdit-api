@@ -19,14 +19,27 @@ The same disclaimer as reactdit stands: this is just a personal project intended
 node api.js
 ```
 
-## To initialize the db
-
-``` 
-npm run createdb
-```
-
 Or if you just want to develop (linting plus nodemon for reloading app when it detects changes): 
 
 ```
 npm run dev
 ```
+
+## To initialize the db
+
+You can find the structure of the db inside *docker/docker-entrypoint-initdb.d/reactdit-db.sql*. As the name suggests, the db is hosted on a docker container. To initalize for the first time, run: 
+
+``` 
+npm run createdb
+```
+
+If you want to start the container again for whatever reason, you can run: 
+
+```
+npm run db
+``` 
+
+Check package.json for the details of these commands. 
+
+
+
